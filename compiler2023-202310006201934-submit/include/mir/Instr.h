@@ -1,6 +1,8 @@
 //
 // Created by XuRuiyuan on 2023/7/14.
 //
+// 该代码文件定义了一系列用于表示编译器中各种指令的类，包括基类 Instr 和多个派生类（如 Alu、Icmp、Fcmp 等）。
+// 这些类封装了指令的各种属性和行为，并提供了相关的方法用于操作和查询指令的状态。这些类和方法有助于在编译器中管理指令的生成、优化和转换操作。
 
 #ifndef FASTER_MEOW_INSTR_H
 #define FASTER_MEOW_INSTR_H
@@ -28,7 +30,7 @@ public:
     bool inLoopCond = false;
 
 
-public:
+public:// 定义了一些构造函数和方法，用于设置和修改指令的使用情况，以及检查指令是否为结束指令
     Instr();
     Instr(Type* type, BasicBlock* bb, int bit);
     Instr(Type* type, BasicBlock* curBB);
@@ -58,6 +60,7 @@ public:
     bool canComb();
     bool canCombFloat();
     bool check();
+    // 这些方法用于初始化、删除、设置和检查指令的各种状态和属性
 
     std::string usesToString() const;
     std::string useValuesToString() const;
@@ -74,10 +77,10 @@ public:
     friend bool operator!=(const Instr &first, const Instr &second);
 
     friend bool operator<(const Instr &first, const Instr &second);
-};
+};// 这些运算符用于字符串转换和指令的比较操作。
 
 namespace INSTR {
-    class Alu: public Instr {
+    class Alu: public Instr {// Alu 类继承自 Instr 类，用于表示算术逻辑单元指令。
     public:
         static std::string OpNameList[16];
         enum class Op{
@@ -119,7 +122,7 @@ namespace INSTR {
         virtual explicit operator std::string() const override;
     };
 
-    class Icmp: public Instr {
+    class Icmp: public Instr {// Icmp 类继承自 Instr 类，用于表示整数比较指令。
     public:
         enum class Op {
             EQ = 0,
@@ -141,7 +144,7 @@ namespace INSTR {
         virtual explicit operator std::string() const override;
     };
 
-    class Fcmp: public Instr {
+    class Fcmp: public Instr {// Fcmp 类继承自 Instr 类，用于表示浮点数比较指令
     public:
         enum class Op {
             OEQ = 0,
@@ -161,7 +164,7 @@ namespace INSTR {
         Instr* cloneToBB(BasicBlock* bb) override;
         virtual explicit operator std::string() const override;
     };
-
+// 代码还定义了其他派生类，如 Zext、FPtosi、SItofp、Alloc、Load、Store、GetElementPtr、BitCast、Call、Phi、PCopy、Move、Branch、Jump 和 Return，用于表示编译器中的各种指令类型。
     class Zext: public Instr {
     public:
         Zext(Value* src, BasicBlock* parentBB);
@@ -358,7 +361,7 @@ namespace INSTR {
 
     extern std::string get_alu_op_name(Alu::Op op);
     extern std::string get_icmp_op_name(Icmp::Op op);
-    extern std::string get_fcmp_op_name(Fcmp::Op op);
+    extern std::string get_fcmp_op_name(Fcmp::Op op);// 这些辅助函数用于获取操作的名称字符串。
 
 }
 

@@ -2,6 +2,7 @@
 // Created by XuRuiyuan on 2023/7/15.
 //
 
+// 该代码定义了一个 BasicBlock 类，用于表示编译器中的基本块，包含了一系列数据成员和方法，支持基本块的各种操作和属性管理
 #ifndef FASTER_MEOW_BASICBLOCK_H
 #define FASTER_MEOW_BASICBLOCK_H
 
@@ -11,27 +12,28 @@
 #include <vector>
 #include <set>
 // #include "Instr.h"
+// 这些是 BasicBlock 类的成员变量，用于存储基本块的各种属性：
 class Instr;
 class Loop;
 
-class Function;
-
-class Loop;
+class Function;// 指向所属的函数
+class Loop;// 指向所属循环
 class McBlock;
 class BasicBlock : public Value {
 public:
     // std::shared_ptr<BasicBlock> sp;
     Function *function;
+    // 指向基本块的开始和结束指令
     Instr *begin;
     Instr *end;
     Loop *loop;
     // Coll::IList<Instr> instr_list;
     std::string label;
 
-    std::vector<BasicBlock*>* precBBs = new std::vector<BasicBlock*>();
+    std::vector<BasicBlock*>* precBBs = new std::vector<BasicBlock*>();//前驱和后继基本块集合
     std::vector<BasicBlock*>* succBBs = new std::vector<BasicBlock*>();
 
-    std::set<BasicBlock*>* doms = new std::set<BasicBlock*>();
+    std::set<BasicBlock*>* doms = new std::set<BasicBlock*>();// 支配关系集合
     std::set<BasicBlock*>* idoms = new std::set<BasicBlock*>();
     std::set<BasicBlock*>* rdoms = new std::set<BasicBlock*>();             // reversed dom tree
     std::set<BasicBlock*>* irdoms = new std::set<BasicBlock*>();
@@ -43,19 +45,20 @@ public:
     bool isLoopLatch = false;
     bool isExit = false;
 
-    int domTreeDeep;
-    BasicBlock* iDominator;
+    int domTreeDeep;// 支配树的深度
+    BasicBlock* iDominator;// 支配和逆支配基本块
     BasicBlock* iRDominator;    // reversed dom tree
 
-    static int bb_count;
+    static int bb_count;// 用于统计基本块数量
     static int empty_bb_count;
-    McBlock *mb;
+    McBlock *mb;// 指向 McBlock 的指针
 public:
     ~BasicBlock() override = default;
     BasicBlock();
     BasicBlock(Function *function, Loop *loop, bool insertAtEnd = true);
 
     //TODO:Loop
+    //这些是 BasicBlock 类的方法，用于基本块的各种操作，例如插入指令、设置前驱后继基本块、修改支配关系、克隆基本块、删除基本块、设置循环相关属性等
     int getLoopDep();
 
     void setFunction(Function *function, Loop *loop);

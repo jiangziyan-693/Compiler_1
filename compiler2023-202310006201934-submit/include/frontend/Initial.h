@@ -1,4 +1,4 @@
-//
+// 总体来说就是初始化的作用
 // Created by Administrator on 2023/7/16.
 //
 
@@ -16,7 +16,7 @@ class Type;
 
 class Value;
 
-class Flatten {
+class Flatten {// 未看懂这个类的具体作用
 public:
     Flatten();
     int size = 0;

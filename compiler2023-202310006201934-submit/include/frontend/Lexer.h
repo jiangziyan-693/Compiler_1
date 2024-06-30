@@ -11,13 +11,13 @@
 #include "../util/File.h"
 #include "iostream"
 
-class Lexer {
+class Lexer {// 词法分析
 public:
     Lexer() = default;
 
     TokenList tokenList = TokenList();
-
-    void keywordTokenDeal(const std::string &str) {
+    // 用来处理字符串并将其转换为相应的 Token 对象，然后将这些 Token 添加到 tokenList 中。该函数实现了对一系列关键字的识别。
+    void keywordTokenDeal(const std::string &str) {// 就是将其转化为语法类
         if (str == "const") {
             Token *tk = new Token(Token::TokenType::CONST, str);
             tokenList.append(tk);
@@ -55,24 +55,24 @@ public:
         }
     }
 
-    bool dealAsicii(int c) {
+    bool dealAsicii(int c) {// 用于处理 ASCII 码值，并根据一些条件返回布尔值
         bool flag = (c == 32 || c == 33 || (c <= 126 && c >= 40));
         if (c == 34) return false;
         if (c == (int) '%') return true;
         return flag;
     }
 
-    bool isNewline(char c) {
+    bool isNewline(char c) {// isNewline 函数用于检查一个字符是否是换行符 (\\n) 或回车符 (\\r)
         if (c == '\n') {
             return true;
         } else return c == '\r';
     }
 
-    bool isDigital(char c) {
+    bool isDigital(char c) {// 判断是否是数字
         return (c <= '9' && c >= '0') || c == '.';
     }
 
-    bool isLetter(char c) {
+    bool isLetter(char c) {// 是否是字母
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
     }
 
@@ -80,7 +80,7 @@ public:
     char last_char = 0;
     std::set<char> special_set;
 
-    int my_get_c() {
+    int my_get_c() {// 读取字符并返回为整数
         // if(index == 15) {
         //     int j = 1;
         // }

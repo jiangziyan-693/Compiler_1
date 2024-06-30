@@ -1,4 +1,5 @@
-
+// 该代码定义了一系列用于表示全局值的类，包括 GlobalVal 及其派生类 GlobalValue、UndefValue 和 VirtualValue。
+// 这些类用于表示编译器中的各种全局变量及其属性和行为，并提供了相应的字符串转换操作。
 #ifndef FASTER_MEOW_GLOBALVAL_H
 #define FASTER_MEOW_GLOBALVAL_H
 
@@ -10,7 +11,7 @@ class Value;
 
 class Type;
 
-class GlobalVal : public Value {
+class GlobalVal : public Value {// 表示该类及其派生类必须实现字符串转换操作。还有一个带有类型参数的构造函数和一个默认构造函数
 public:
     explicit GlobalVal(Type *type);
 
@@ -22,7 +23,7 @@ public:
 
 };
 
-class GlobalValue : public GlobalVal {
+class GlobalValue : public GlobalVal {// 用于表示具体的全局变量
 public:
     ~GlobalValue() override = default;
 
@@ -43,11 +44,11 @@ public:
     virtual explicit operator std::string() const override;
 };
 
-struct CompareGlobalValue {
+struct CompareGlobalValue {// 是一个函数对象，用于比较两个 GlobalValue 指针。它重载了 operator()，以便在需要排序或比较 GlobalValue 对象时使用。
     bool operator()(const GlobalValue *lhs, const GlobalValue *rhs) const;
 };
 
-class UndefValue : public GlobalVal {
+class UndefValue : public GlobalVal {// UndefValue 类继承自 GlobalVal 类，用于表示未定义的全局值。
 public:
     ~UndefValue() override = default;
 
@@ -67,7 +68,7 @@ public:
     virtual explicit operator std::string() const override;
 };
 
-class VirtualValue : public GlobalVal {
+class VirtualValue : public GlobalVal {// VirtualValue 类继承自 GlobalVal 类，用于表示虚拟的全局值。
 public:
     ~VirtualValue() override = default;
 

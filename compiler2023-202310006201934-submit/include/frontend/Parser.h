@@ -13,7 +13,7 @@ class Parser {
 public:
     TokenList &tokenList;
 
-    void out_tokens() {
+    void out_tokens() {// 用于输出 tokenList 中所有令牌的内容，并在每个令牌之间加一个空格，最后输出一个换行符
         for (const Token *t: tokenList.tokens) {
             std::cout << t->content << " ";
         }
@@ -22,7 +22,7 @@ public:
 
     explicit Parser(TokenList &tokenList) : tokenList(tokenList) {}
 
-    AST::Ast *parseAst() {
+    AST::Ast *parseAst() {// 根据令牌流的情况判断是解析函数定义还是声明，并将解析的结果添加到 ast 对象的 units 向量中
         auto ast = new AST::Ast();
         while (tokenList.has_next()) {
             if (tokenList.ahead(2)->is_of(Token::LPARENT)) {
@@ -34,7 +34,7 @@ public:
         return ast;
     }
 
-    AST::Decl *parseDecl() {
+    AST::Decl *parseDecl() {// 它检查声明是否为常量，并解析基本类型和一系列定义
         AST::Decl *decl = new AST::Decl();
         bool constant;
         if (tokenList.get()->is_of(Token::CONST)) {
@@ -54,7 +54,7 @@ public:
         return decl;
     }
 
-    AST::Def *parseDef(Token *bType, bool constant) {
+    AST::Def *parseDef(Token *bType, bool constant) {// 该函数根据传入的 Token *bType 和 bool constant 来解析变量或常量的定义
         AST::Def *def = new AST::Def();
         def->bType = bType->token_type;
         def->ident = tokenList.consume_expect(Token::IDENT);
@@ -75,7 +75,7 @@ public:
         return def;
     }
 
-    AST::Init *parseInitVal() {
+    AST::Init *parseInitVal() {// 这个函数根据当前的令牌类型决定是解析一个初始化数组还是一个加法表达式
         if (tokenList.get()->is_of(Token::LBRACE)) {
             return dynamic_cast<AST::Init *>(parseInitArray());
         } else {
@@ -83,7 +83,7 @@ public:
         }
     }
 
-    AST::InitArray *parseInitArray() {
+    AST::InitArray *parseInitArray() {// 用于解析初始化数组，并返回一个 AST::InitArray 类型的指针
         // std::vector<AST::Init> init = new std::vector<>();
         AST::InitArray *initArray = new AST::InitArray;
         tokenList.consume_expect(Token::LBRACE);
@@ -98,7 +98,7 @@ public:
         return initArray;
     }
 
-    AST::FuncDef *parseFuncDef() {
+    AST::FuncDef *parseFuncDef() {// 解析函数定义，并返回一个 AST::FuncDef 类型的指针
         // todo
         auto *funcDef = new AST::FuncDef;
         funcDef->type = tokenList.consume();
@@ -113,7 +113,7 @@ public:
         return funcDef;
     }
 
-    std::vector<AST::FuncFParam *> *parseFuncFParams() {
+    std::vector<AST::FuncFParam *> *parseFuncFParams() {// 解析多个函数形式参数，直到遇到不是逗号的令牌为止。它将所有解析到的函数形式参数存储在一个 std::vector<AST::FuncFParam *> 容器中
         std::vector<AST::FuncFParam *> *fParams = new std::vector<AST::FuncFParam *>;
         // AST::FuncFParam *p = ;
         fParams->push_back(parseFuncFParam());
@@ -124,7 +124,7 @@ public:
         return fParams;
     }
 
-    AST::FuncFParam *parseFuncFParam() {
+    AST::FuncFParam *parseFuncFParam() {// 解析函数的形式参数。如果该参数是一个数组，它将解析数组的维度信息并存储在 funcFParam 对象中
         AST::FuncFParam *funcFParam = new AST::FuncFParam();
         funcFParam->bType = tokenList.consume();
         funcFParam->ident = tokenList.consume_expect(Token::IDENT);
@@ -143,7 +143,7 @@ public:
         return funcFParam;
     }
 
-    AST::Block *parseBlock() {
+    AST::Block *parseBlock() {// 解析一个代码块（由 { 和 } 包围的代码片段），并将解析出的项（BlockItem）
         AST::Block *block = new AST::Block;
         // std::vector<AST::BlockItem> items = new std::vector<>();
         tokenList.consume_expect(Token::LBRACE);
@@ -154,7 +154,7 @@ public:
         return block;
     }
 
-    AST::BlockItem *parseBlockItem() {
+    AST::BlockItem *parseBlockItem() {// 这段代码定义了一个名为 parseBlockItem 的函数，它的作用是解析代码块中的项（Block Item）
         if (tokenList.get()->is_of(Token::FLOAT)
             || tokenList.get()->is_of(Token::INT)
             || tokenList.get()->is_of(Token::CONST)) {
@@ -164,7 +164,7 @@ public:
         }
     }
 
-    AST::Stmt *parseStmt() {
+    AST::Stmt *parseStmt() {// 这段代码定义了一个名为 parseStmt 的函数，其作用是解析语句（Statement）并构建相应的抽象语法树（AST）节点。
         Token::TokenType temp = tokenList.get()->token_type;
         // AST::Exp *cond;
         switch (temp) {
@@ -250,7 +250,7 @@ public:
         }
     }
 
-    AST::LVal *parseLVal() {
+    AST::LVal *parseLVal() {// 解析左值
         AST::LVal *lVal = new AST::LVal;
         lVal->ident = tokenList.consume_expect(Token::IDENT);
         // std::vector<AST::Exp> indexes = new std::vector<>();
@@ -262,7 +262,7 @@ public:
         return lVal;
     }
 
-    AST::PrimaryExp *parsePrimary() {
+    AST::PrimaryExp *parsePrimary() {// 用于解析初级表达式,包括括号内的表达式、数值常量、函数调用和左值
         Token *temp = tokenList.get();
         if (temp->is_of(Token::LPARENT)) {
             tokenList.consume();
@@ -280,7 +280,7 @@ public:
         }
     }
 
-    AST::Call *parseCall() {
+    AST::Call *parseCall() {// 解析函数调用表达式并返回一个表示该调用的抽象语法树（AST）节点
         AST::Call *call = new AST::Call;
         call->ident = tokenList.consume_expect(Token::IDENT);
         // std::vector<AST::Exp> params = new std::vector<>();
